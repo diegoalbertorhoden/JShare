@@ -1,29 +1,42 @@
 package br.univel.telas;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 import java.awt.Font;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-import java.awt.event.ActionEvent;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
-public class TelaServidor extends JFrame {
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
+import br.univel.arquivos.Arquivo;
+import br.univel.comum.Cliente;
+import br.univel.comum.Servidor;
+
+public class TelaServidor extends JFrame implements Servidor {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textField;
 	private JTextField textField_1;
 	private int intPorta = 5050;
+	private JTextArea textArea;
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy H:mm:ss:SSS");
 
 	/**
 	 * Launch the application.
@@ -97,9 +110,17 @@ public class TelaServidor extends JFrame {
 		scrollPane.setBounds(15, 419, 544, -318);
 		contentPane.add(scrollPane);
 		
-		JTextArea textArea = new JTextArea();
+		textArea = new JTextArea();
+		textArea.setEnabled(false);
 		textArea.setBounds(25, 87, 534, 338);
 		contentPane.add(textArea);
+	}
+	
+	private void mostrar(String string) {
+		textArea.append(sdf.format(new Date()));
+		textArea.append(" -> ");
+		textArea.append(string);
+		textArea.append("\n");
 	}
 
 	protected void iniciarServico() {
@@ -107,7 +128,7 @@ public class TelaServidor extends JFrame {
 		
 		
 		try{
-			servidor = (Servidor) UnicastRemoteObject.exportObject(this, 0);
+			servidor = (IServer)) UnicastRemoteObject.exportObject(this, 0);
 			registry = LocateRegistry.createRegistry(intPorta);
 			registry.rebind(Servidor.NOME, servidor);
 			
@@ -117,6 +138,60 @@ public class TelaServidor extends JFrame {
 		}
 		
 		
+		
+	}
+
+	@Override
+	public void registrarCliente(Cliente c) throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void publicarListaArquivos(Cliente c, List<Arquivo> lista) throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Map<Cliente, List<Arquivo>> procurarArquivo(String nome) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public byte[] baixarArquivo(Arquivo arq) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void desconectar(Cliente c) throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void entrarNoChat(String nome, Cliente cliente) throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void enviarMensagem(String remetente, String destinatario, String mensagem) throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void enviarMensagemPublica(String remetente, String mensagem) throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sair(String nome) throws RemoteException {
+		// TODO Auto-generated method stub
 		
 	}
 }
