@@ -42,7 +42,7 @@ public class TelaServidor extends JFrame implements Servidor {
 	private Registry registry;
 	private JButton btnConectar;
 	private JButton btnParar;
-	
+
 	/**
 	 * Launch the application.
 	 */
@@ -52,7 +52,7 @@ public class TelaServidor extends JFrame implements Servidor {
 				try {
 					TelaServidor frame = new TelaServidor();
 					frame.setVisible(true);
-					
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -64,7 +64,7 @@ public class TelaServidor extends JFrame implements Servidor {
 	 * Create the frame.
 	 */
 	public TelaServidor() {
-		
+
 		btnParar.setEnabled(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 601, 474);
@@ -97,7 +97,7 @@ public class TelaServidor extends JFrame implements Servidor {
 		btnParar = new JButton("Parar o servi\u00E7o");
 		btnParar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				pararServico();
 			}
 		});
@@ -129,7 +129,7 @@ public class TelaServidor extends JFrame implements Servidor {
 		textArea.setBounds(25, 87, 534, 338);
 		contentPane.add(textArea);
 	}
-	
+
 	protected void pararServico() {
 		mostrar("SERVIDOR PARANDO O SERVICO.");
 
@@ -148,13 +148,13 @@ public class TelaServidor extends JFrame implements Servidor {
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private void fecharTodosClientes() {
-		
+
 		mostrar("DESCONECTANDO TODOS OS CLIENTES.");
-		
+
 	}
 
 	private Map<String, Cliente> mapaClientes = new HashMap<>();
