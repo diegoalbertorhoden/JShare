@@ -2,6 +2,10 @@ package br.univel.comum;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Map;
+
+import br.univel.arquivos.Arquivo;
 
 /**
  * Interface implementada pelo servidor. Esses métodos são chamados nos servidor
@@ -29,50 +33,47 @@ public interface Servidor extends Remote {
 	 * 
 	 * @throws RemoteException
 	 */
-	public void entrarNoChat(String nome, Cliente cliente) throws RemoteException;
+	public void registrarCliente(Cliente c) throws RemoteException;
 
 	/**
-	 * Enviar mensagem para outro participante. Esse envio é intermediado pelo
-	 * servidor, ou seja, o cliente1 envia para o servidor com destino cliente2,
-	 * então o servidor envia para o cliente2.
+	 * Recebe a lista de arquivos disponíveis no cliente.
 	 * 
-	 * @param remetente
-	 *            Nome do remetente.
-	 * 
-	 * @param destinatario
-	 *            Nome do destinatário.
-	 * 
-	 * @param mensagem
-	 *            Texto da mensagem.
-	 * 
+	 * @param c
+	 * @param lista
 	 * @throws RemoteException
 	 */
-	public void enviarMensagem(String remetente, String destinatario, String mensagem) throws RemoteException;
+	public void publicarListaArquivos(Cliente c, List<Arquivo> lista)
+			throws RemoteException;
 
 	/**
-	 * Enviar mensagem para todos os outros participantes. Esse envio é
-	 * intermediado pelo servidor, ou seja, o cliente1 envia para o servidor
-	 * então o servidor envia para todos os outros clientes.
-	 * 
-	 * @param remetente
-	 *            Nome do remetente.
-	 * 
-	 * @param mensagem
-	 *            Texto da mensagem.
-	 * 
-	 * @throws RemoteException
-	 */
-	public void enviarMensagemPublica(String remetente, String mensagem) throws RemoteException;
-
-	/**
-	 * Chamado pelo cliente quando ele deseja deixar o chat. O servidor nesse
-	 * momento notifica todos os outros participantes da saída desse cliente.
+	 * Usado quando um cliente deseja procurar um arquivo pelo nome, o
+	 * servidor lê todos os arquivos publicados e retorna uma mapa contendo
+	 * os resultados em cada cliente.
 	 * 
 	 * @param nome
-	 *            Nome do cliente.
-	 * 
+	 * @return
 	 * @throws RemoteException
 	 */
-	public void sair(String nome) throws RemoteException;
+	public Map<Cliente, List<Arquivo>> procurarArquivo(String nome)
+			throws RemoteException;
+
+	/**
+	 * Recebe informações do arquivo e retorna o arquivo em formato
+	 * de array de bytes. 
+	 * 
+	 * @param arq
+	 * @return
+	 * @throws RemoteException
+	 */
+	public byte[] baixarArquivo(Arquivo arq) throws RemoteException;
+
+	/**
+	 * Desconecta o cliente, tornando também indisponível seus arquivos
+	 * para as buscas. 
+	 * 
+	 * @param c
+	 * @throws RemoteException
+	 */
+	public void desconectar(Cliente c) throws RemoteException;
 
 }

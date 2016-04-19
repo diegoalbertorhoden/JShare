@@ -11,6 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -24,6 +25,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import br.univel.arquivos.Arquivo;
 import br.univel.comum.Cliente;
 import br.univel.comum.Servidor;
 
@@ -65,7 +67,6 @@ public class TelaServidor extends JFrame implements Servidor {
 	 */
 	public TelaServidor() {
 
-		btnParar.setEnabled(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 601, 474);
 		contentPane = new JPanel();
@@ -186,25 +187,31 @@ public class TelaServidor extends JFrame implements Servidor {
 	}
 
 	@Override
-	public void entrarNoChat(String nome, Cliente cliente) throws RemoteException {
+	public void registrarCliente(Cliente c) throws RemoteException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void enviarMensagem(String remetente, String destinatario, String mensagem) throws RemoteException {
+	public void publicarListaArquivos(Cliente c, List<Arquivo> lista) throws RemoteException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void enviarMensagemPublica(String remetente, String mensagem) throws RemoteException {
+	public Map<Cliente, List<Arquivo>> procurarArquivo(String nome) throws RemoteException {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	@Override
-	public void sair(String nome) throws RemoteException {
+	public byte[] baixarArquivo(Arquivo arq) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void desconectar(Cliente c) throws RemoteException {
 		// TODO Auto-generated method stub
 
 	}
