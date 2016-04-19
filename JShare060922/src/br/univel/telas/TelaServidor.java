@@ -30,9 +30,7 @@ import br.univel.comum.Cliente;
 import br.univel.comum.Servidor;
 
 public class TelaServidor extends JFrame implements Servidor {
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textField;
@@ -45,9 +43,6 @@ public class TelaServidor extends JFrame implements Servidor {
 	private JButton btnConectar;
 	private JButton btnParar;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -62,9 +57,6 @@ public class TelaServidor extends JFrame implements Servidor {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public TelaServidor() {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -179,7 +171,7 @@ public class TelaServidor extends JFrame implements Servidor {
 			btnConectar.setEnabled(false);
 			btnParar.setEnabled(true);
 		}catch (RemoteException e) {
-			JOptionPane.showMessageDialog(this, "Erro criando registro, verifique se a porta já não está sendo usada.");
+			JOptionPane.showMessageDialog(this, "Erro criando registro, verifique se a porta ja nao esta sendo usada.");
 			e.printStackTrace();
 		}
 
