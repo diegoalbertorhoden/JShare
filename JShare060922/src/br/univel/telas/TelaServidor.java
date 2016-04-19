@@ -10,6 +10,8 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -39,6 +41,8 @@ public class TelaServidor extends JFrame implements Servidor {
 	private Servidor servidor;
 	private Registry registry;
 	private JButton btnConectar;
+	private JButton btnParar;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -48,6 +52,7 @@ public class TelaServidor extends JFrame implements Servidor {
 				try {
 					TelaServidor frame = new TelaServidor();
 					frame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -59,6 +64,8 @@ public class TelaServidor extends JFrame implements Servidor {
 	 * Create the frame.
 	 */
 	public TelaServidor() {
+		
+		btnParar.setEnabled(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 601, 474);
 		contentPane = new JPanel();
@@ -87,9 +94,15 @@ public class TelaServidor extends JFrame implements Servidor {
 		btnConectar.setBounds(316, 53, 89, 23);
 		contentPane.add(btnConectar);
 
-		JButton btnPararOServio = new JButton("Parar o servi\u00E7o");
-		btnPararOServio.setBounds(415, 53, 109, 23);
-		contentPane.add(btnPararOServio);
+		btnParar = new JButton("Parar o servi\u00E7o");
+		btnParar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				pararServico();
+			}
+		});
+		btnParar.setBounds(415, 53, 109, 23);
+		contentPane.add(btnParar);
 
 		JLabel lblPorta = new JLabel("Porta");
 		lblPorta.setBounds(168, 57, 46, 14);
@@ -116,6 +129,35 @@ public class TelaServidor extends JFrame implements Servidor {
 		textArea.setBounds(25, 87, 534, 338);
 		contentPane.add(textArea);
 	}
+	
+	protected void pararServico() {
+		mostrar("SERVIDOR PARANDO O SERVICO.");
+
+		fecharTodosClientes();
+
+		try {
+			UnicastRemoteObject.unexportObject(this, true);
+			UnicastRemoteObject.unexportObject(registry, true);
+
+			btnConectar.setEnabled(true);
+
+			btnParar.setEnabled(false);
+
+			mostrar("Servico encerrado.");
+
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	private void fecharTodosClientes() {
+		
+		mostrar("DESCONECTANDO TODOS OS CLIENTES.");
+		
+	}
+
+	private Map<String, Cliente> mapaClientes = new HashMap<>();
 
 	private void mostrar(String string) {
 		textArea.append(sdf.format(new Date()));
@@ -126,8 +168,6 @@ public class TelaServidor extends JFrame implements Servidor {
 
 	protected void iniciarServico() {
 
-
-
 		try{
 			servidor = (Servidor) UnicastRemoteObject.exportObject(this, 0);
 			registry = LocateRegistry.createRegistry(intPorta);
@@ -136,6 +176,7 @@ public class TelaServidor extends JFrame implements Servidor {
 			mostrar("Servico iniciado");
 
 			btnConectar.setEnabled(false);
+			btnParar.setEnabled(true);
 		}catch (RemoteException e) {
 			JOptionPane.showMessageDialog(this, "Erro criando registro, verifique se a porta já não está sendo usada.");
 			e.printStackTrace();
