@@ -180,7 +180,7 @@ public class TelaServidor extends JFrame implements Servidor {
 
 	@Override
 	public void registrarCliente(Cliente c) throws RemoteException {
-		// TODO Auto-generated method stub
+		
 
 	}
 

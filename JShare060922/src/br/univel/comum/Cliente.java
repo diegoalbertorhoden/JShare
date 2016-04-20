@@ -3,12 +3,12 @@ package br.univel.comum;
 import java.io.Serializable;
 
 /**
- * Identificação do cliente.
+ * Identificao do cliente.
  * 
- * @author fernandod
+ * @author
  *
  */
-public interface Cliente implements Serializable {
+public class Cliente implements Serializable {
 
 	static final long serialVersionUID = 8998030883019232904L;
 	
