@@ -4,6 +4,10 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.server.UnicastRemoteObject;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -11,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import br.univel.comum.Cliente;
 import br.univel.comum.Servidor;
 
 public class TelaCliente extends JFrame{
@@ -33,8 +38,8 @@ public class TelaCliente extends JFrame{
 	}
 
 	private JTextField txtMeuNome;
-	private JTextField textField_1;
-	private JTextField textField_2;
+	private JTextField txtIp;
+	private JTextField txtPorta;
 	private Object nome;
 
 
@@ -63,17 +68,17 @@ public class TelaCliente extends JFrame{
 		lblPorta.setBounds(310, 13, 48, 20);
 		getContentPane().add(lblPorta);
 
-		textField_1 = new JTextField();
-		textField_1.setText("127.0.0.1");
-		textField_1.setBounds(105, 51, 86, 20);
-		getContentPane().add(textField_1);
-		textField_1.setColumns(10);
+		txtIp = new JTextField();
+		txtIp.setText("127.0.0.1");
+		txtIp.setBounds(105, 51, 86, 20);
+		getContentPane().add(txtIp);
+		txtIp.setColumns(10);
 
-		textField_2 = new JTextField();
-		textField_2.setText("5050");
-		textField_2.setBounds(368, 15, 58, 20);
-		getContentPane().add(textField_2);
-		textField_2.setColumns(10);
+		txtPorta = new JTextField();
+		txtPorta.setText("5050");
+		txtPorta.setBounds(368, 15, 58, 20);
+		getContentPane().add(txtPorta);
+		txtPorta.setColumns(10);
 
 		JButton btnConectar = new JButton("Conectar");
 		btnConectar.addActionListener(new ActionListener() {
@@ -97,31 +102,31 @@ public class TelaCliente extends JFrame{
 			JOptionPane.showMessageDialog(this, "Você precisa digitar um nome!");
 			return;
 		}
-		
+
 		try {
 			registry = LocateRegistry.getRegistry(host, intPorta);
-	
+
 			servidor = (Servidor) registry.lookup(Servidor.NOME);
 			cliente = (Cliente) UnicastRemoteObject.exportObject(this, 0);
-	
-			// Avisando o servidor que está entrando no Chat.
+
+
 			servidor.entrarNoChat(meunome, cliente);
-	
-			buttonDesconectar.setEnabled(true);
-	
-			buttonConectar.setEnabled(false);
+
+			btnConectar.setEnabled(true);
+
+			btnConectar.setEnabled(false);
 			txtMeuNome.setEnabled(false);
-			txfIp.setEnabled(false);
-			txfPorta.setEnabled(false);
-	
-			buttonConectar.setEnabled(false);
-			buttonEnviar.setEnabled(true);
-			txfMensagem.setEnabled(true);
-	
+			txtIp.setEnabled(false);
+			txtPorta.setEnabled(false);
+
+			btnConectar.setEnabled(false);
+
+
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		} catch (NotBoundException e
-) {e.printStackTrace();
+				) {e.printStackTrace();
 
+		}
 	}
-	}
+}
