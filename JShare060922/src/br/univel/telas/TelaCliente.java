@@ -15,8 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import br.univel.comum.Cliente;
-import br.univel.comum.Servidor;
+import br.dagostini.jshare.comun.Cliente;
+import br.dagostini.jshare.comun.Servidor;
 
 public class TelaCliente extends JFrame{
 

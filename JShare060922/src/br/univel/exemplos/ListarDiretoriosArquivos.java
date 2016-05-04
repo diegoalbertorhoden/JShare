@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.univel.arquivos.Arquivo;
-import br.univel.arquivos.Diretorio;
+import br.dagostini.jshare.comum.pojos.Arquivo;
+import br.dagostini.jshare.comum.pojos.Diretorio;
 
 public class ListarDiretoriosArquivos {
 

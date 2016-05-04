@@ -25,9 +25,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import br.univel.arquivos.Arquivo;
-import br.univel.comum.Cliente;
-import br.univel.comum.Servidor;
+import br.dagostini.jshare.comum.pojos.Arquivo;
+import br.dagostini.jshare.comun.Cliente;
+import br.dagostini.jshare.comun.Servidor;
 
 public class TelaServidor extends JFrame implements Servidor {
 	
