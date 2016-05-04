@@ -7,17 +7,8 @@ import java.util.Map;
 
 import br.dagostini.jshare.comum.pojos.Arquivo;
 
-/**
- * Interface implementada pelo servidor. Esses métodos são chamados nos servidor
- * e executados no cliente.
- * 
- * AVISO: NÃO PREOCUPAÇÃO ALGUMA COM A SEGURANÇA AQUI. ESSE É SÓ UM EXEMPLO DE
- * RMI.
- * 
- * @author Fernando D'Agostini
- *
- */
-public interface Servidor extends Remote {
+
+public interface IServer extends Remote {
 
 	public static final String NOME = "ChatRMI";
 

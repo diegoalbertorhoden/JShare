@@ -27,9 +27,9 @@ import javax.swing.border.EmptyBorder;
 
 import br.dagostini.jshare.comum.pojos.Arquivo;
 import br.dagostini.jshare.comun.Cliente;
-import br.dagostini.jshare.comun.Servidor;
+import br.dagostini.jshare.comun.IServer;
 
-public class TelaServidor extends JFrame implements Servidor {
+public class TelaServidor extends JFrame implements IServer {
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -38,7 +38,7 @@ public class TelaServidor extends JFrame implements Servidor {
 	private int intPorta = 5050;
 	private JTextArea textArea;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy H:mm:ss:SSS");
-	private Servidor servidor;
+	private IServer servidor;
 	private Registry registry;
 	private JButton btnConectar;
 	private JButton btnParar;
@@ -162,9 +162,9 @@ public class TelaServidor extends JFrame implements Servidor {
 	protected void iniciarServico() {
 
 		try{
-			servidor = (Servidor) UnicastRemoteObject.exportObject(this, 0);
+			servidor = (IServer) UnicastRemoteObject.exportObject(this, 0);
 			registry = LocateRegistry.createRegistry(intPorta);
-			registry.rebind(Servidor.NOME, servidor);
+			registry.rebind(IServer.NOME, servidor);
 
 			mostrar("Servico iniciado");
 

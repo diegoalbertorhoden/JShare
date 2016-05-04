@@ -2,18 +2,12 @@ package br.dagostini.jshare.comun;
 
 import java.io.Serializable;
 
-/**
- * Identificao do cliente.
- * 
- * @author
- *
- */
 public class Cliente implements Serializable {
 
-	static final long serialVersionUID = 8998030883019232904L;
+	private static final long serialVersionUID = 8998030883019232904L;
 	
-	String nome;
-	String ip;
+	private String nome;
+	private String ip;
 	private int porta;
 
 	public String getNome() {

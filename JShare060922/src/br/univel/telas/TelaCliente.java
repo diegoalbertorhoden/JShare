@@ -16,13 +16,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import br.dagostini.jshare.comun.Cliente;
-import br.dagostini.jshare.comun.Servidor;
+import br.dagostini.jshare.comun.IServer;
 
 public class TelaCliente extends JFrame{
 
 	private static final long serialVersionUID = -1981548995134350542L;
 	private Object registry;
-	private Servidor servidor;
+	private IServer servidor;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -106,7 +106,7 @@ public class TelaCliente extends JFrame{
 		try {
 			registry = LocateRegistry.getRegistry(host, intPorta);
 
-			servidor = (Servidor) registry.lookup(Servidor.NOME);
+			servidor = (IServer) registry.lookup(IServer.NOME);
 			cliente = (Cliente) UnicastRemoteObject.exportObject(this, 0);
 
 
