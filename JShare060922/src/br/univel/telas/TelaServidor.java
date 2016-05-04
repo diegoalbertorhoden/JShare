@@ -28,7 +28,7 @@ import javax.swing.border.EmptyBorder;
 import br.dagostini.jshare.comum.pojos.Arquivo;
 import br.dagostini.jshare.comun.Cliente;
 import br.dagostini.jshare.comun.IServer;
-
+//interface grafica para o server
 public class TelaServidor extends JFrame implements IServer {
 	
 	private static final long serialVersionUID = 1L;
