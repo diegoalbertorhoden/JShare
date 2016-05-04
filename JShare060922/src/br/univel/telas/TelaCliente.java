@@ -4,21 +4,20 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import br.dagostini.jshare.comum.pojos.Arquivo;
 import br.dagostini.jshare.comun.Cliente;
 import br.dagostini.jshare.comun.IServer;
 
-public class TelaCliente extends JFrame{
+public class TelaCliente extends JFrame implements IServer{
 
 	private static final long serialVersionUID = -1981548995134350542L;
 	private Object registry;
@@ -97,36 +96,30 @@ public class TelaCliente extends JFrame{
 		getContentPane().add(btnDesconectar);
 	}
 	protected void conectar() {
-		nome = txtMeuNome.getText().trim();
-		if (((String) nome).length() == 0) {
-			JOptionPane.showMessageDialog(this, "Você precisa digitar um nome!");
-			return;
-		}
+	}
+	@Override
+	public void registrarCliente(Cliente c) throws RemoteException {
+		// TODO Auto-generated method stub
 
-		try {
-			registry = LocateRegistry.getRegistry(host, intPorta);
+	}
+	@Override
+	public void publicarListaArquivos(Cliente c, List<Arquivo> lista) throws RemoteException {
+		// TODO Auto-generated method stub
 
-			servidor = (IServer) registry.lookup(IServer.NOME);
-			cliente = (Cliente) UnicastRemoteObject.exportObject(this, 0);
+	}
+	@Override
+	public Map<Cliente, List<Arquivo>> procurarArquivo(String nome) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public byte[] baixarArquivo(Arquivo arq) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void desconectar(Cliente c) throws RemoteException {
+		// TODO Auto-generated method stub
 
-
-			servidor.entrarNoChat(meunome, cliente);
-
-			btnConectar.setEnabled(true);
-
-			btnConectar.setEnabled(false);
-			txtMeuNome.setEnabled(false);
-			txtIp.setEnabled(false);
-			txtPorta.setEnabled(false);
-
-			btnConectar.setEnabled(false);
-
-
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (NotBoundException e
-				) {e.printStackTrace();
-
-		}
 	}
 }
