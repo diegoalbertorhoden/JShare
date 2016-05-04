@@ -1,4 +1,4 @@
-package br.univel.exemplos;
+package br.univel.diversos;
 
 import java.io.File;
 import java.util.ArrayList;
