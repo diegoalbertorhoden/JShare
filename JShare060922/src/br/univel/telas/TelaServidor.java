@@ -74,11 +74,7 @@ public class TelaServidor extends JFrame implements IServer {
 				pararServico();
 			}
 		});
-
-
 	}
-
-
 
 	public TelaServidor() {
 
@@ -227,6 +223,7 @@ public class TelaServidor extends JFrame implements IServer {
 
 	@Override
 	public void desconectar(Cliente c) throws RemoteException {
-
+		mapaClientes.remove(c.getIp());
+		mostrar(c.getNome() + " está offline.");
 	}
 }
