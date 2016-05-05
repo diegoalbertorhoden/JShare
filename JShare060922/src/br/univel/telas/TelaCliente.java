@@ -4,7 +4,14 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -195,7 +202,43 @@ public class TelaCliente extends JFrame implements IServer{
 
 		tblArquivos = new JTable();
 		scrollPane.setViewportView(tblArquivos);
+		tblArquivos.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent evt){
+				if(evt.getClickCount()==2){
+					Object IP = tblArquivos.getValueAt(tblArquivos.getSelectedRow(), 1);
+					Object porta = tblArquivos.getValueAt(tblArquivos.getSelectedRow(), 2);
+					Object nomeArquivo = tblArquivos.getValueAt(tblArquivos.getSelectedRow(), 3);
+					
+					try{
+						registry = LocateRegistry.getRegistry((String) IP, (int) porta);
+						IServer clienteservidor = (IServer) registry.lookup(IServer.NOME);
+						clienteservidor.registrarCliente(cliente);
+						Arquivo arquivo = new Arquivo();
+						arquivo.setNome((String) nomeArquivo);
+						
+						byte[] baixarArquivo = clienteservidor.baixarArquivo(arquivo);
+						writeFile(new File("C:\\JShare\\Downloads\\"+ arquivo.getNome()),baixarArquivo);
+								
+					}catch (RemoteException e){
+						e.printStackTrace();
+					}catch (NotBoundException e){
+						e.printStackTrace();
+					}
+				}
+			}
+		});
 	}
+	//http://stackoverflow.com/questions/2885173/how-to-create-a-file-and-write-to-a-file-in-java
+	
+	protected void writeFile(File arq, byte[] dados) {
+		try{
+			Files.write(Paths.get(arq.getPath()), dados, StandardOpenOption.CREATE);
+		}catch (IOException e){
+			throw new RuntimeException(e);
+		}
+		
+	}
+
 	protected void conectar() {
 		//primeiro captura o texto existente no field da pessoa pra identificar
 		nome = txtNome.getText().trim();
@@ -298,8 +341,24 @@ public class TelaCliente extends JFrame implements IServer{
 	}
 	@Override
 	public byte[] baixarArquivo(Arquivo arq) throws RemoteException {
-		// TODO Auto-generated method stub
+		List<Arquivo> relacaoArquivos = minhaListaDeArquivos();
+		for(Arquivo arquivo : relacaoArquivos){
+			if(arquivo.getNome().contains(arq.getNome())){
+				//criação do arquivo...
+				byte[] readFile = readFile(new File("C:\\JShare\\Uploads\\"+ arq.getNome()));
+				return readFile;
+			}
+		}
 		return null;
+	}
+	protected byte[] readFile(File arq) {
+		Path path = Paths.get(arq.getPath());
+		try{
+			byte[] dados = Files.readAllBytes(path);
+			return dados;
+		}catch (IOException e){
+			throw new RuntimeException(e);
+		}
 	}
 	@Override
 	public void desconectar(Cliente c) throws RemoteException {
