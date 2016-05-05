@@ -4,15 +4,18 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -30,7 +33,7 @@ import br.dagostini.jshare.comun.Cliente;
 import br.dagostini.jshare.comun.IServer;
 //interface grafica para o server
 public class TelaServidor extends JFrame implements IServer {
-	
+
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textField;
@@ -49,13 +52,33 @@ public class TelaServidor extends JFrame implements IServer {
 				try {
 					TelaServidor frame = new TelaServidor();
 					frame.setVisible(true);
-
+					frame.configurar();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
 	}
+
+	protected void configurar() {
+		btnParar.setEnabled(false);
+		btnConectar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				iniciarServico();
+			}
+		});
+
+		btnParar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				pararServico();
+			}
+		});
+
+
+	}
+
+
 
 	public TelaServidor() {
 
@@ -77,23 +100,10 @@ public class TelaServidor extends JFrame implements IServer {
 		contentPane.add(lblNewLabel);
 
 		btnConectar = new JButton("Conectar");
-		btnConectar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				iniciarServico();
-
-			}
-		});
 		btnConectar.setBounds(316, 53, 89, 23);
 		contentPane.add(btnConectar);
 
 		btnParar = new JButton("Parar o servi\u00E7o");
-		btnParar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-				pararServico();
-			}
-		});
 		btnParar.setBounds(415, 53, 109, 23);
 		contentPane.add(btnParar);
 
@@ -126,10 +136,8 @@ public class TelaServidor extends JFrame implements IServer {
 	protected void pararServico() {
 		mostrar("SERVIDOR PARANDO O SERVICO.");
 
-		fecharTodosClientes();
-
 		try {
-			UnicastRemoteObject.unexportObject(this, true);
+			UnicastRemoteObject.unexportObject((Remote) this, true);
 			UnicastRemoteObject.unexportObject(registry, true);
 
 			btnConectar.setEnabled(true);
@@ -141,13 +149,10 @@ public class TelaServidor extends JFrame implements IServer {
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
-
 	}
-
 	private void fecharTodosClientes() {
 
 		mostrar("DESCONECTANDO TODOS OS CLIENTES.");
-
 	}
 
 	private Map<String, Cliente> mapaClientes = new HashMap<>();
@@ -158,7 +163,6 @@ public class TelaServidor extends JFrame implements IServer {
 		textArea.append(string);
 		textArea.append("\n");
 	}
-
 	protected void iniciarServico() {
 
 		try{
@@ -174,26 +178,45 @@ public class TelaServidor extends JFrame implements IServer {
 			JOptionPane.showMessageDialog(this, "Erro criando registro, verifique se a porta ja nao esta sendo usada.");
 			e.printStackTrace();
 		}
-
-
 	}
 
 	@Override
 	public void registrarCliente(Cliente c) throws RemoteException {
-		
-
+		mapaClientes.put(c.getIp(), c);
+		mostrar("Cliente " + c.getNome() + " está online.");
 	}
 
+	private Map<Cliente, List<Arquivo>> mapaClienteArquivo = new HashMap<>();
+	//método que vai publicar a lista de arquivos contidos no mapa
 	@Override
 	public void publicarListaArquivos(Cliente c, List<Arquivo> lista) throws RemoteException {
-		// TODO Auto-generated method stub
+		for (Arquivo arquivo : lista) {
 
+			mapaClienteArquivo.put(c, lista);
+
+			mostrar(mapaClienteArquivo.toString());
+		}		
 	}
 
 	@Override
 	public Map<Cliente, List<Arquivo>> procurarArquivo(String nome) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		Map<Cliente, List<Arquivo>> arquivosEncontrados = new HashMap<Cliente, List<Arquivo>>();
+		for(Entry<Cliente, List<Arquivo>> arquivos : mapaClienteArquivo.entrySet()){
+			for(Arquivo arquivo : arquivos.getValue()){
+				if(arquivo.getNome().toLowerCase().contains(nome.toLowerCase())){
+					List<Arquivo> listaArquivos = new ArrayList<Arquivo>();
+					Cliente cadastronovo = new Cliente();
+
+					cadastronovo.setNome(arquivos.getKey().getNome());
+					cadastronovo.setIp(arquivos.getKey().getIp());
+					cadastronovo.setPorta(arquivos.getKey().getPorta());
+
+					listaArquivos.add(arquivo);
+					arquivosEncontrados.put(cadastronovo, listaArquivos);
+				}
+			}
+		}
+		return arquivosEncontrados;
 	}
 
 	@Override
@@ -204,7 +227,6 @@ public class TelaServidor extends JFrame implements IServer {
 
 	@Override
 	public void desconectar(Cliente c) throws RemoteException {
-		// TODO Auto-generated method stub
 
 	}
 }
