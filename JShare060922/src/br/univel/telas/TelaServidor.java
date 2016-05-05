@@ -4,6 +4,9 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -12,12 +15,16 @@ import java.rmi.server.UnicastRemoteObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Vector;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -45,6 +52,7 @@ public class TelaServidor extends JFrame implements IServer {
 	private Registry registry;
 	private JButton btnConectar;
 	private JButton btnParar;
+	private JComboBox comboIP;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -62,6 +70,11 @@ public class TelaServidor extends JFrame implements IServer {
 
 	public void configurar() {
 		btnParar.setEnabled(false);
+
+		List<String> lista = getIpsDisponiveis();
+		comboIP.setModel(new DefaultComboBoxModel<String>(new Vector<String>(lista)));
+		comboIP.setSelectedIndex(0);
+
 		btnConectar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				iniciarServico();
@@ -75,6 +88,37 @@ public class TelaServidor extends JFrame implements IServer {
 			}
 		});
 	}
+
+	private List<String> getIpsDisponiveis() {
+
+		List<String> addrList = new ArrayList<String>();
+		try {
+			Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
+
+			while (ifaces.hasMoreElements()) {
+				NetworkInterface ifc = ifaces.nextElement();
+				if (ifc.isUp()) {
+					Enumeration<InetAddress> addresses = ifc.getInetAddresses();
+					while (addresses.hasMoreElements()) {
+
+						InetAddress addr = addresses.nextElement();
+
+						String ip = addr.getHostAddress();
+
+						if (ip.matches("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}")) {
+							addrList.add(ip);
+						}
+
+					}
+				}
+			}
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+
+		return addrList;
+	}
+
 
 	public TelaServidor() {
 
@@ -127,6 +171,10 @@ public class TelaServidor extends JFrame implements IServer {
 		textArea.setEnabled(false);
 		textArea.setBounds(25, 87, 534, 338);
 		contentPane.add(textArea);
+
+		comboIP = new JComboBox();
+		comboIP.setBounds(332, 22, 192, 20);
+		contentPane.add(comboIP);
 	}
 
 	protected void pararServico() {

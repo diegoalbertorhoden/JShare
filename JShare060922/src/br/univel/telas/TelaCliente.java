@@ -132,76 +132,73 @@ public class TelaCliente extends JFrame implements IServer{
 		getContentPane().setLayout(null);
 
 		JLabel lblNome = new JLabel("Nome Cliente");
-		lblNome.setBounds(0, 0, 93, 29);
+		lblNome.setBounds(10, 25, 93, 29);
 		lblNome.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		getContentPane().add(lblNome);
 
 		txtNome = new JTextField();
-		txtNome.setBounds(117, 6, 223, 20);
+		txtNome.setBounds(151, 31, 223, 20);
 		getContentPane().add(txtNome);
 		txtNome.setColumns(10);
 
 		JLabel lblPorta = new JLabel("Porta");
-		lblPorta.setBounds(350, 6, 93, 17);
+		lblPorta.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblPorta.setBounds(384, 31, 70, 17);
 		lblPorta.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		getContentPane().add(lblPorta);
 
 		txtPorta = new JTextField();
-		txtPorta.setBounds(384, 6, 55, 20);
+		txtPorta.setBounds(469, 31, 55, 20);
 		txtPorta.setHorizontalAlignment(SwingConstants.CENTER);
 		txtPorta.setText("5050");
 		getContentPane().add(txtPorta);
 		txtPorta.setColumns(10);
 
 		JLabel lblIpDeConexo = new JLabel("Ip de conex\u00E3o");
-		lblIpDeConexo.setBounds(0, 34, 93, 23);
+		lblIpDeConexo.setBounds(10, 59, 93, 23);
 		lblIpDeConexo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		getContentPane().add(lblIpDeConexo);
 
 		txtIp = new JTextField();
-		txtIp.setBounds(117, 37, 88, 20);
+		txtIp.setBounds(151, 62, 169, 20);
 		txtIp.setHorizontalAlignment(SwingConstants.CENTER);
 		txtIp.setText("127.0.0.1");
 		getContentPane().add(txtIp);
 		txtIp.setColumns(10);
 
-		JLabel lblIpLocal = new JLabel("Ip local");
-		lblIpLocal.setBounds(215, 34, 42, 23);
-		lblIpLocal.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		getContentPane().add(lblIpLocal);
-
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(267, 37, 151, 20);
-		getContentPane().add(comboBox);
-
 		JButton btnConectar = new JButton("Conectar");
-		btnConectar.setBounds(423, 34, 104, 23);
+		btnConectar.setBounds(338, 62, 104, 23);
 		getContentPane().add(btnConectar);
 
 		JButton btnDesconectar = new JButton("Desconectar");
-		btnDesconectar.setBounds(532, 34, 93, 23);
+		btnDesconectar.setBounds(479, 62, 93, 23);
 		getContentPane().add(btnDesconectar);
 
 		JLabel lblArquivoProcurado = new JLabel("Arquivo Procurado");
-		lblArquivoProcurado.setBounds(0, 62, 182, 23);
+		lblArquivoProcurado.setBounds(10, 87, 131, 23);
 		lblArquivoProcurado.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		getContentPane().add(lblArquivoProcurado);
 
 		txtProcurado = new JTextField();
-		txtProcurado.setBounds(187, 62, 291, 20);
+		txtProcurado.setBounds(151, 90, 322, 20);
 		getContentPane().add(txtProcurado);
 		txtProcurado.setColumns(10);
 
 		JButton btnBuscar = new JButton("Buscar");
-		btnBuscar.setBounds(513, 62, 65, 23);
+		btnBuscar.setBounds(483, 87, 90, 23);
 		getContentPane().add(btnBuscar);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 90, 620, 346);
+		scrollPane.setBounds(0, 121, 620, 315);
 		getContentPane().add(scrollPane);
 
 		tblArquivos = new JTable();
 		scrollPane.setViewportView(tblArquivos);
+		
+		JLabel lblCliente = new JLabel("Cliente");
+		lblCliente.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblCliente.setBounds(210, 6, 77, 20);
+		getContentPane().add(lblCliente);
 		tblArquivos.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt){
 				if(evt.getClickCount()==2){
@@ -239,7 +236,7 @@ public class TelaCliente extends JFrame implements IServer{
 		
 	}
 
-	protected void conectar() {
+	public void conectar() {
 		//primeiro captura o texto existente no field da pessoa pra identificar
 		nome = txtNome.getText().trim();
 		//se nao tiver nada, apresenta erro
