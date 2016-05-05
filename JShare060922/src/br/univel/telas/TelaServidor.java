@@ -60,7 +60,7 @@ public class TelaServidor extends JFrame implements IServer {
 		});
 	}
 
-	protected void configurar() {
+	public void configurar() {
 		btnParar.setEnabled(false);
 		btnConectar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
