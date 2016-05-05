@@ -4,7 +4,13 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -25,7 +32,7 @@ import br.univel.diversos.TabelaArquivos;
 public class TelaCliente extends JFrame implements IServer{
 
 	private static final long serialVersionUID = -1981548995134350542L;
-	private Object registry;
+	private Registry registry;
 	private IServer servidor;
 	private JButton btnConectar;
 	private JButton btnDesconectar;
@@ -87,7 +94,7 @@ public class TelaCliente extends JFrame implements IServer{
 
 	protected void desconectar() {
 		//testar se está esvaziando a instancia*************
-		
+
 		try{		
 			if(servidor !=null){
 				servidor.desconectar(cliente);
@@ -106,9 +113,10 @@ public class TelaCliente extends JFrame implements IServer{
 	private JTextField txtNome;
 	private JTextField txtIp;
 	private JTextField txtPorta;
-	private Object nome;
 	private JTextField txtProcurado;
 	private JTable tblArquivos;
+	private String nome;
+	private Cliente guerreiro;
 
 
 	public TelaCliente() {
@@ -161,14 +169,6 @@ public class TelaCliente extends JFrame implements IServer{
 
 		JButton btnConectar = new JButton("Conectar");
 		btnConectar.setBounds(423, 34, 104, 23);
-		btnConectar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-
-				conectar();
-
-			}
-		});
 		getContentPane().add(btnConectar);
 
 		JButton btnDesconectar = new JButton("Desconectar");
@@ -197,7 +197,90 @@ public class TelaCliente extends JFrame implements IServer{
 		scrollPane.setViewportView(tblArquivos);
 	}
 	protected void conectar() {
+		//primeiro captura o texto existente no field da pessoa pra identificar
+		nome = txtNome.getText().trim();
+		//se nao tiver nada, apresenta erro
+		if(nome.length()==0){
+			JOptionPane.showMessageDialog(this, "digite um nome");
+			return;
+		}
+		//captura o endereço do ip e verifica se está coerente (ex 127.0.0.1)
+		String endereco = txtIp.getText().trim();
+		if(!endereco.matches("[0-9{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}")){
+			JOptionPane.showMessageDialog(this, "ip incorreto, corrija");
+		}
+
+		String portaPadrao = txtPorta.getText().trim();
+		//verificação se a porta é válida
+		if(!portaPadrao.matches("[0-9]+")|| portaPadrao.length()>5){
+			JOptionPane.showMessageDialog(this, "digitar uma porta válida");
+			return;
+		}
+		int portavalorinteiro = Integer.parseInt(portaPadrao);
+
+		try{
+			registry = LocateRegistry.getRegistry(endereco, portavalorinteiro);
+			servidor = (IServer) registry.lookup(IServer.NOME);
+
+			cliente = new Cliente();
+			cliente.setIp(txtIp.getText());
+			cliente.setPorta(Integer.parseInt(txtPorta.getText()));
+			cliente.setNome(txtNome.getText());
+
+			//aqui começa a maracutaia legal da parada... rsrsr
+			//registrando cliente
+			servidor.registrarCliente(cliente);
+
+			//publicando a lista de arquivos...
+			List<Arquivo> lista = minhaListaDeArquivos();
+			servidor.publicarListaArquivos(cliente, lista);
+
+			//com o esquema de cliente-servidor, deixamos em standby
+			iniciaServico();
+		}catch (RemoteException e){
+			e.printStackTrace();
+		}catch (NotBoundException e){
+			e.printStackTrace();
+		}
+
 	}
+	private void iniciaServico() {
+		String portaPadrao = txtIp.getText().trim();
+		if(!portaPadrao.matches("[0-9]+")|| portaPadrao.length()>5){
+			JOptionPane.showMessageDialog(this, "porta incorreta, verifique");
+			return;
+		}
+		int portaNumerica = Integer.parseInt(portaPadrao);
+		if (portaNumerica<1024 || portaNumerica>65535){
+			JOptionPane.showMessageDialog(this, "faixa de porta errado");
+			return;
+		}
+		try{
+			IServer connection = (IServer) UnicastRemoteObject.exportObject(this,0);
+			registry = LocateRegistry.createRegistry(portaNumerica);
+			registry.rebind(IServer.NOME, connection);
+
+		}catch(RemoteException e){
+			JOptionPane.showMessageDialog(this, "nao foi possivel criar registro");
+			e.printStackTrace();
+		}
+	}
+
+	private List<Arquivo> minhaListaDeArquivos() {
+		File varrerDiretorio = new File("C:\\JShare\\Uploads\\");
+		List<Arquivo> listFiles = new ArrayList<>();
+		for(File file : varrerDiretorio.listFiles()){
+			if(file.isFile()){
+				Arquivo arquivo = new Arquivo();
+				arquivo.setNome(file.getName());
+				arquivo.setTamanho(file.length());
+				listFiles.add(arquivo);
+			}
+		}
+
+		return listFiles;
+	}
+
 	@Override
 	public void registrarCliente(Cliente c) throws RemoteException {
 		// TODO Auto-generated method stub
