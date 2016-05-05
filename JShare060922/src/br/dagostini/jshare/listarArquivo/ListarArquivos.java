@@ -13,12 +13,12 @@ public class ListarArquivos {
 	public List<Arquivo> listarArquivo(){
 		File inicioDiretorio = new File(".\\Upados");
 		List<Arquivo> listaArquivos = new ArrayList<>();
-		
+
 		for(File file : inicioDiretorio.listFiles()){
-			
-// verificaçãozinha básica se o arquivo é mesmo um arquivo
+
+			// verificaçãozinha básica se o arquivo é mesmo um arquivo
 			//(pois ele pode ser um diretório)
-			
+
 			if(file.isFile()){
 				Arquivo arq= new Arquivo();
 				arq.setNome(file.getName());
@@ -28,5 +28,5 @@ public class ListarArquivos {
 		}
 		return listaArquivos;
 	}
-	
+
 }

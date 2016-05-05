@@ -27,7 +27,6 @@ public class LeituraEscritaDeArquivos {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-
 	}
 
 	public void escreva(File arq, byte[] dados) {
@@ -36,7 +35,6 @@ public class LeituraEscritaDeArquivos {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-
 	}
 
 	public static void main(String[] args) {
@@ -44,5 +42,4 @@ public class LeituraEscritaDeArquivos {
 		// 1 - Instancia um objeto da classe LerArquivo.
 		new LeituraEscritaDeArquivos(new File("logo.png"));
 	}
-
 }

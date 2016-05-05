@@ -14,7 +14,7 @@ public class TabelaArquivos extends AbstractTableModel {
 
 	private static final long serialVersionUID = 2220593048149495985L;
 
-	//aquui seguimos mais ou menos o exemplo realizado em sala...
+	//aqui seguimos mais ou menos o exemplo realizado em sala...
 	Map<Cliente,List<Arquivo>> listandoNaTabela = new HashMap<>();
 
 	private Object [][] matriz;
@@ -58,12 +58,12 @@ public class TabelaArquivos extends AbstractTableModel {
 		// TODO Auto-generated method stub
 		return linhas;
 	}
-	
-	
+
+
 
 	@Override
 	public String getColumnName(int column) {
-		
+
 		switch(column){
 		case 0:
 			return "Nome do cliente";
@@ -77,7 +77,7 @@ public class TabelaArquivos extends AbstractTableModel {
 			return "tamanho do arquivo";
 		default:
 			return "";
-			
+
 		}
 	}
 
