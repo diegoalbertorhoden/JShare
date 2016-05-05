@@ -8,7 +8,6 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -21,6 +20,7 @@ import javax.swing.SwingConstants;
 import br.dagostini.jshare.comum.pojos.Arquivo;
 import br.dagostini.jshare.comun.Cliente;
 import br.dagostini.jshare.comun.IServer;
+import br.univel.diversos.TabelaArquivos;
 
 public class TelaCliente extends JFrame implements IServer{
 
@@ -30,6 +30,10 @@ public class TelaCliente extends JFrame implements IServer{
 	private JButton btnConectar;
 	private JButton btnDesconectar;
 	private Cliente cliente;
+	private JButton btnBuscar;
+	private JTextField txtNomeArquivo;
+	private TabelaArquivos novo;
+	private JTable table;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -58,16 +62,37 @@ public class TelaCliente extends JFrame implements IServer{
 				desconectar();
 			}
 		});
-		
+
+		btnBuscar.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				buscarArquivos();
+			}
+		});
+
+	}
+
+	//vai até a tabela e realiza a extração de informações da tabela
+	protected void buscarArquivos() {
+
+		try{
+			Map<Cliente, List<Arquivo>> arquivosdalista = servidor.procurarArquivo(txtNomeArquivo.getText());
+			novo = new TabelaArquivos(arquivosdalista);
+
+			table.setModel(novo);
+		}catch(RemoteException e){
+			e.printStackTrace();
+		}
+
 	}
 
 	protected void desconectar() {
+		//testar se está esvaziando a instancia*************
+		
 		try{		
 			if(servidor !=null){
 				servidor.desconectar(cliente);
 				servidor = null;
 			}
-			
 			btnDesconectar.setEnabled(false);
 			btnConectar.setEnabled(true);
 			registry = null;
@@ -75,7 +100,7 @@ public class TelaCliente extends JFrame implements IServer{
 		}catch(RemoteException e){
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private JTextField txtNome;
